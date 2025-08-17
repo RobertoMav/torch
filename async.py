@@ -2,7 +2,7 @@ import asyncio
 import random
 import time
 
-
+t0 = time.time()
 async def post_endpoint_call(api):
     time_results = []
     for i in range(4): # This is blocking the event loop from calling the api again before its response
@@ -30,5 +30,8 @@ print(f"{t1 + t2=}")
 
 print(f"{results=}")
 print(f"{len(results)=}")
-for result in results:
+for i, result in enumerate(results):
     print(f"{len(result)=}")
+    print(f"API {i} took {sum(result)} seconds")
+
+print(f"Time taken: {time.time() - t0}")
