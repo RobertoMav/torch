@@ -7,19 +7,19 @@ class Generator(torch.nn.Module):
         self.conv1 = torch.nn.Sequential(
             torch.nn.ConvTranspose2d(100, 256, 3, 2),
             torch.nn.BatchNorm2d(256),
-            torch.nn.LeakyReLU(inplace=True))
+            torch.nn.LeakyReLU(inplace=True),
+        )
         self.conv2 = torch.nn.Sequential(
             torch.nn.ConvTranspose2d(256, 128, 4, 1),
             torch.nn.BatchNorm2d(128),
-            torch.nn.LeakyReLU(inplace=True))
+            torch.nn.LeakyReLU(inplace=True),
+        )
         self.conv3 = torch.nn.Sequential(
             torch.nn.ConvTranspose2d(128, 64, 3, 2),
             torch.nn.BatchNorm2d(64),
-            torch.nn.LeakyReLU(inplace=True))
-        self.conv4 = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(64, 1, 4, 2),
-            torch.nn.Tanh()
+            torch.nn.LeakyReLU(inplace=True),
         )
+        self.conv4 = torch.nn.Sequential(torch.nn.ConvTranspose2d(64, 1, 4, 2), torch.nn.Tanh())
         # init weights
         self.apply(self._init_weights)
 
@@ -43,17 +43,14 @@ class GeneratorMLP(torch.nn.Module):
     def __init__(self):
         super(GeneratorMLP, self).__init__()
         self.fc1 = torch.nn.Sequential(
-            torch.nn.Linear(100, 512),
-            torch.nn.BatchNorm1d(512),
-            torch.nn.LeakyReLU(inplace=True))
+            torch.nn.Linear(100, 512), torch.nn.BatchNorm1d(512), torch.nn.LeakyReLU(inplace=True)
+        )
         self.fc2 = torch.nn.Sequential(
             torch.nn.Linear(512, 1024),
             torch.nn.BatchNorm1d(1024),
-            torch.nn.LeakyReLU(inplace=True))
-        self.fc3 = torch.nn.Sequential(
-            torch.nn.Linear(1024, 784),
-            torch.nn.Tanh()
+            torch.nn.LeakyReLU(inplace=True),
         )
+        self.fc3 = torch.nn.Sequential(torch.nn.Linear(1024, 784), torch.nn.Tanh())
         # init weights
         self.apply(self._init_weights)
 
@@ -78,16 +75,12 @@ class DiscriminatorMLP(torch.nn.Module):
     def __init__(self):
         super(DiscriminatorMLP, self).__init__()
         self.fc1 = torch.nn.Sequential(
-            torch.nn.Linear(784, 1024),
-            torch.nn.LeakyReLU(0.2, inplace=True)
+            torch.nn.Linear(784, 1024), torch.nn.LeakyReLU(0.2, inplace=True)
         )
         self.fc2 = torch.nn.Sequential(
-            torch.nn.Linear(1024, 512),
-            torch.nn.LeakyReLU(0.2, inplace=True)
+            torch.nn.Linear(1024, 512), torch.nn.LeakyReLU(0.2, inplace=True)
         )
-        self.fc3 = torch.nn.Sequential(
-            torch.nn.Linear(512, 1)
-        )
+        self.fc3 = torch.nn.Sequential(torch.nn.Linear(512, 1))
         # init weights
         self.apply(self._init_weights)
 
@@ -111,11 +104,10 @@ class Discriminator(torch.nn.Module):
             torch.nn.Conv2d(1, 256, 4, 2),
             torch.nn.BatchNorm2d(256),
             torch.nn.LeakyReLU(0.2, inplace=True),
-
             torch.nn.Conv2d(256, 512, 4, 2),
             torch.nn.BatchNorm2d(512),
             torch.nn.LeakyReLU(0.2, inplace=True),
-            torch.nn.Conv2d(512, 1, 4, 2)
+            torch.nn.Conv2d(512, 1, 4, 2),
         )
         self.apply(self._init_weights)
 
