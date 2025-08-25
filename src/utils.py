@@ -1,5 +1,8 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import torch
+from pydantic import BaseModel, Field
 
 
 def save_image_batch(
@@ -7,15 +10,22 @@ def save_image_batch(
     iter: int,
     out_dir: str = "training",
 ) -> None:
-    rows = 2
-    cols = 2
-    batch_size: int = images.shape[0] ** 0.5
-    max_size: int = min()
-    fig, axs = plt.subplots(rows, cols, figsize=(10, 8))
+    batch_size: int = images.shape[0]
+    # Considering a random positive batch size and a squared image matrix
+    # we have a size limit that equals the floor value of the square root.
+    # This exists due to a Index Error when the size of the figure is bigger than the batch size.
+    # To ensure this, we take the square root of batch size and convert it to int.
+    max_size: int = int((batch_size) ** 0.5)
+
+    _, axs = plt.subplots(max_size, max_size, figsize=(10, 8))
+
     for i, ax in enumerate(axs.flatten()):
         ax.imshow(images[i].detach().cpu().permute(1, 2, 0).numpy(), cmap="gray")
         ax.axis("off")
-    plt.savefig(f"training/iter_{iter}.png")
+
+    out_dir_path: Path = Path(out_dir)
+    out_dir_path.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_dir_path / f"iter_{iter}.png")
     plt.close()
 
 
@@ -62,3 +72,10 @@ def _gradient_penalty(
     gradients = gradients.view(gradients.size(0), -1)
     gradient_penalty = torch.mean((gradients.norm(2, dim=1) - 1) ** 2)
     return gradient_penalty
+
+
+class TrainStepReturn(BaseModel):
+    total_loss: float
+    gen_loss: float | None = Field(
+        default=None,
+    )

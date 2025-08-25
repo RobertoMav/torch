@@ -1,6 +1,5 @@
 from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
+from torchvision import datasets, transforms
 
 
 def create_dataloaders(data_dir: str, batch_size: int, num_workers: int):
@@ -8,7 +7,10 @@ def create_dataloaders(data_dir: str, batch_size: int, num_workers: int):
         root=data_dir,
         train=True,
         download=True,
-        transform=ToTensor(),
+        transform=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5,), (0.5,))
+        ]),
     )
 
     train_dataloader = DataLoader(
